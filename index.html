@@ -118,6 +118,19 @@ h2.sec-title::before{content:"";width:4px;height:15px;border-radius:3px;backgrou
 .toolbar input[type=checkbox]{accent-color:var(--brand2);width:15px;height:15px;cursor:pointer}
 .count-info{margin-left:auto;font-size:11.5px;color:var(--muted);font-weight:600}
 
+/* ---------- ekspor per komponen/kriteria ---------- */
+.exportbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;background:#f7fafc;
+  border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;margin:0 0 12px;box-shadow:var(--shadow)}
+.exportbar label{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11.5px;font-weight:700}
+.exportbar select{max-width:470px;min-width:180px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;
+  background:#fff;color:var(--ink);font:inherit;font-size:12px}
+.exportbar select:focus{outline:none;border-color:var(--brand2);box-shadow:0 0 0 3px rgba(15,125,107,.14)}
+.exportbar .exportCriterion{min-width:300px}
+.exporthint{font-size:10.5px;color:var(--muted);margin-left:auto}
+@media(max-width:900px){.exportbar label{flex:1 1 100%;align-items:flex-start;flex-direction:column}
+  .exportbar select,.exportbar .exportCriterion{width:100%;max-width:none;min-width:0}.exporthint{flex-basis:100%;margin-left:0}}
+#exportPrint{display:none}
+
 /* ---------- table ---------- */
 .tablewrap{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:auto;
   max-height:74vh;box-shadow:var(--shadow);margin-top:12px;scrollbar-width:thin}
@@ -227,7 +240,7 @@ details[open] summary{margin-bottom:5px}
 @media print{
   @page{size:A4 landscape;margin:9mm}
   body{background:#fff}
-  header.top .actions,.toolbar,#sppanel,#drawer,#drBackdrop,.toast,.card,.gbar,.comptab,.badge-live{display:none!important}
+  header.top .actions,.toolbar,.exportbar,#sppanel,#drawer,#drBackdrop,.toast,.card,.gbar,.comptab,.badge-live{display:none!important}
   header.top{box-shadow:none;padding:0 0 10px;background:#fff;color:#000}
   header.top h1{color:#0e3a5c;font-size:15pt}
   header.top .sub{color:#444}
@@ -251,6 +264,39 @@ details[open] summary{margin-bottom:5px}
   .footstats{page-break-inside:avoid}
   .fstat{box-shadow:none}
 }
+@media print{
+  @page pbSheet{size:A4 portrait;margin:9mm}
+  @page smSheet{size:A4 portrait;margin:9mm}
+  @page ckSheet{size:A4 landscape;margin:9mm}
+  @page nilaiSheet{size:A4 landscape;margin:9mm}
+  body.print-export-mode{background:#fff!important}
+  body.print-export-mode #exportPrint [data-component="PB"]{page:pbSheet}
+  body.print-export-mode #exportPrint [data-component="SM"]{page:smSheet}
+  body.print-export-mode #exportPrint [data-component="CK"]{page:ckSheet}
+  body.print-export-mode #exportPrint [data-component="NILAI"]{page:nilaiSheet}
+  body.print-export-mode > :not(#exportPrint){display:none!important}
+  body.print-export-mode > #exportPrint{display:block!important;padding:0;color:#111;background:#fff}
+  body.print-export-mode #exportPrint .export-print-head{margin:0 0 7mm}
+  body.print-export-mode #exportPrint h1{font-size:15pt;line-height:1.25;color:#111;margin:0 0 4mm}
+  body.print-export-mode #exportPrint p{font-size:8.5pt;line-height:1.35;margin:1.5mm 0;color:#333}
+  body.print-export-mode #exportPrint .template-caption{font-weight:700;margin-top:3mm}
+  body.print-export-mode #exportPrint .print-export-sheet:not(:last-child){break-after:page;page-break-after:always}
+  body.print-export-mode #exportPrint table.kk{border-collapse:collapse;table-layout:auto;width:100%;min-width:0;font-size:6.5pt}
+  body.print-export-mode #exportPrint table.kk th,
+  body.print-export-mode #exportPrint table.kk td{border:1px solid #808080;padding:3px 4px;vertical-align:top;
+    white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
+  body.print-export-mode #exportPrint table.kk thead{display:table-header-group}
+  body.print-export-mode #exportPrint table.kk thead th{position:static;background:#a5a5a5!important;color:#111!important;font-weight:700;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-export-mode #exportPrint table.kk thead tr.marker-row th{background:#d9d9d9!important;text-align:center}
+  body.print-export-mode #exportPrint table.kk tfoot td{background:#d9d9d9!important;font-weight:600;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-export-mode #exportPrint tr{break-inside:avoid;page-break-inside:avoid}
+  body.print-export-mode #exportPrint tr.grp td,
+  body.print-export-mode #exportPrint tr.sec td{background:#bfbfbf!important;color:#111!important;font-weight:700;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-export-mode #exportPrint tr.subsec td{background:#d9d9d9!important;color:#111!important;font-weight:700;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
 </style>
 </head>
 <body>
@@ -258,13 +304,13 @@ details[open] summary{margin-bottom:5px}
   <div class="hrow">
     <div>
       <h1>Dashboard Kertas Kerja — Pembinaan &amp; Supervisi Semester II Tahun Anggaran 2026</h1>
-      <p class="sub">KPPN Pekalongan · Kanwil DJPb Jawa Tengah &nbsp;|&nbsp; 3 komponen: <b>Proses Bisnis (PB)</b> · <b>Sarpras &amp; Mutu Layanan (SM)</b> · <b>Capaian Kinerja (CK)</b>. Kolom kuning (<b>Link</b> &amp; <b>Nilai</b>) dapat diubah — tersimpan otomatis di browser ini. Export: Excel (3 sheet), PDF, CSV.</p>
+      <p class="sub">KPPN Pekalongan · Kanwil DJPb Jawa Tengah &nbsp;|&nbsp; 3 komponen: <b>Proses Bisnis (PB)</b> · <b>Sarpras &amp; Mutu Layanan (SM)</b> · <b>Capaian Kinerja (CK)</b>. Kolom kuning (<b>Link</b> &amp; <b>Nilai</b>) dapat diubah — tersimpan otomatis di browser ini. Ekspor: Excel 3 kertas kerja + rekap Nilai atau per komponen/kriteria, PDF global atau per komponen/kriteria, dan CSV. Restore/Import menambahkan data baru tanpa menimpa data lama.</p>
     </div>
     <span class="badge-live"><i></i> Data tersimpan lokal</span>
   </div>
   <div class="actions">
     <button class="primary" id="btnImport">📂 Import CSV SharePoint</button>
-    <button id="btnExcel">📗 Export Excel (.xlsx) — 3 sheet</button>
+    <button id="btnExcel">📗 Export Excel (.xlsx) — 3 kertas kerja + Nilai</button>
     <button id="btnPdf">🖨️ Cetak / Simpan PDF</button>
     <button id="btnExport">⬇ Export Status (CSV)</button>
     <button id="btnBackup">💾 Backup JSON</button>
@@ -307,6 +353,7 @@ details[open] summary{margin-bottom:5px}
   <div class="body" id="drBody"></div>
 </aside>
 <div class="toast" id="toast"></div>
+<div id="exportPrint" aria-hidden="true"></div>
 <script>
 'use strict';
 /* ============================================================
@@ -4735,6 +4782,68 @@ const STOP=new Set(['dan','yang','di','ke','dari','pada','atas','untuk','serta',
 function sigTokens(s){const t=tokens(s).filter(x=>!STOP.has(x));return t.length?t:tokens(s);}
 function parseLinks(cell){return String(cell||'').split(/[\n\r]+/).map(s=>s.trim()).filter(Boolean);}
 function isUrl(s){return /^https?:\/\/\S+$/i.test(s);}
+function isObjectRecord(v){return !!v&&typeof v==='object'&&!Array.isArray(v);}
+/* Restore bersifat append-only: data yang sudah ada selalu menang, termasuk nilai kosong. */
+function mergeEditsKeepExisting(existing,incoming){
+  const oldMap=isObjectRecord(existing)?existing:{};
+  const newMap=isObjectRecord(incoming)?incoming:{};
+  const out=Object.create(null);
+  for(const id of Object.keys(oldMap)){
+    const value=oldMap[id];
+    out[id]=isObjectRecord(value)?Object.assign(Object.create(null),value):value;
+  }
+  for(const id of Object.keys(newMap)){
+    const next=newMap[id];
+    if(!Object.prototype.hasOwnProperty.call(out,id)){
+      out[id]=isObjectRecord(next)?Object.assign(Object.create(null),next):next;
+      continue;
+    }
+    if(isObjectRecord(out[id])&&isObjectRecord(next)){
+      for(const field of Object.keys(next)){
+        if(!Object.prototype.hasOwnProperty.call(out[id],field))out[id][field]=next[field];
+      }
+    }
+  }
+  return out;
+}
+function countNewEditFields(existing,incoming){
+  const oldMap=isObjectRecord(existing)?existing:{};
+  const newMap=isObjectRecord(incoming)?incoming:{};
+  let count=0;
+  for(const id of Object.keys(newMap)){
+    const next=newMap[id];
+    if(!Object.prototype.hasOwnProperty.call(oldMap,id)){
+      count+=isObjectRecord(next)?Math.max(Object.keys(next).length,1):1;
+    }else if(isObjectRecord(oldMap[id])&&isObjectRecord(next)){
+      for(const field of Object.keys(next))if(!Object.prototype.hasOwnProperty.call(oldMap[id],field))count++;
+    }
+  }
+  return count;
+}
+function pathKey(path){
+  return String(path==null?'':path).trim().replace(/[\\/]+/g,'\\').replace(/\\+$/,'').toLowerCase();
+}
+function mergeFileRecordsKeepExisting(existing,incoming){
+  const out=[],seen=new Set();
+  for(const file of (Array.isArray(existing)?existing:[]).concat(Array.isArray(incoming)?incoming:[])){
+    if(!isObjectRecord(file))continue;
+    const key=pathKey(file.path);
+    if(!key||seen.has(key))continue;
+    seen.add(key);out.push(file);
+  }
+  return out;
+}
+function mergeFolderPathsKeepExisting(existing,incoming){
+  const out=[],seen=new Set();
+  for(const item of (Array.isArray(existing)?existing:[]).concat(Array.isArray(incoming)?incoming:[])){
+    const raw=typeof item==='string'?item:(item&&item.path);
+    const value=String(raw==null?'':raw).trim().replace(/\//g,'\\').replace(/\\+$/,'');
+    const key=pathKey(value);
+    if(!key||seen.has(key))continue;
+    seen.add(key);out.push(value);
+  }
+  return out;
+}
 function nilaiNum(v){
   const s=String(v==null?'':v).trim();
   if(s==='')return null;
@@ -4955,7 +5064,8 @@ function allItems(){const out=[];for(const c of COMPONENTS)for(const i of c._ite
 if(typeof module!=='undefined'&&module.exports){
   module.exports={COMPONENTS,parseCSV,filesFromCSV,matchFile,matchAll,routeFile,parentNum,autoMap,
     deriveKeyword,computeStats,groupStats,norm,tokens,sigTokens,parseLinks,nilaiNum,konversiOf,
-    commonRoot,isJunkFile,allItems};
+    commonRoot,isJunkFile,allItems,mergeEditsKeepExisting,countNewEditFields,pathKey,
+    mergeFileRecordsKeepExisting,mergeFolderPathsKeepExisting};
 }
 </script>
 <script>
@@ -5003,12 +5113,40 @@ function fmtSize(b){if(!b)return'';const u=['B','KB','MB','GB'];let i=0,n=b;whil
 const $=s=>document.querySelector(s);
 
 /* ---------- render struktur ---------- */
+function criterionExportLabel(r){
+  let title='';
+  if(r.materi)title=r.materi;
+  else if(r.aspek&&r.uraian)title=r.aspek+' — '+r.uraian;
+  else title=r.aspek||r.uraian||r.kriteria||'';
+  title=String(title).replace(/\s+/g,' ').trim();
+  if(title.length>104)title=title.slice(0,101)+'…';
+  return 'No. '+(r.no||'—')+(title?' — '+title:'');
+}
 function renderCompArea(){
-  $('#compArea').innerHTML=COMPONENTS.map(c=>`
+  $('#compArea').innerHTML=COMPONENTS.map(c=>{
+    const criterionOptions=c._items.map(r=>`<option value="${r.id}">${esc(criterionExportLabel(r))}</option>`).join('');
+    return `
     <div class="compblock" data-comp="${c.id}" id="block-${c.id}">
       <div class="comphead">
         <h2>${esc(c.full)} <span class="tag">file: ${c.prefix}.01 · ${c.prefix}1</span></h2>
         <div class="ministats" id="mini-${c.id}"></div>
+      </div>
+      <div class="exportbar" aria-label="Cetak dan ekspor ${esc(c.name)}">
+        <label>Kriteria / baris
+          <select class="exportCriterion" id="exportCriterion-${c.id}" data-comp="${c.id}">
+            <option value="">Semua kriteria</option>${criterionOptions}
+          </select>
+        </label>
+        <label>Status penilaian
+          <select class="exportAssessment" id="exportAssessment-${c.id}" data-comp="${c.id}">
+            <option value="all">Semua baris</option>
+            <option value="unevaluated">Belum dinilai</option>
+            <option value="evaluated">Sudah dinilai (termasuk N/A)</option>
+          </select>
+        </label>
+        <button type="button" class="btnCompPdf" data-comp="${c.id}">🖨️ Cetak PDF</button>
+        <button type="button" class="btnCompExcel" data-comp="${c.id}">📗 Export Excel</button>
+        <span class="exporthint">Ekspor khusus komponen ini; kriteria bisa dipilih satu per satu.</span>
       </div>
       <div class="groupbars" id="gbars-${c.id}"></div>
       <div class="toolbar">
@@ -5028,7 +5166,8 @@ function renderCompArea(){
       </div>
       <div class="tablewrap"><table class="kk"><thead><tr id="head-${c.id}"></tr></thead><tbody id="body-${c.id}"></tbody></table></div>
       <div class="footstats" id="foot-${c.id}"></div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   COMPONENTS.forEach(c=>{
     $('#head-'+c.id).innerHTML=c.cols.map(col=>`<th>${col.label}</th>`).join('');
   });
@@ -5287,21 +5426,50 @@ function matchFolderName(path,row){
   return tk.every(t=>tp.has(t));
 }
 
-/* ---------- import CSV ---------- */
+/* ---------- append-only data import / restore ---------- */
+function storedFiles(snapshot){
+  snapshot=snapshot||{};
+  const items=Array.isArray(snapshot.spItems)?snapshot.spItems.filter(f=>f&&String(f.type||'').toLowerCase()!=='folder'):[];
+  const direct=Array.isArray(snapshot.spFiles)?snapshot.spFiles:[];
+  return mergeFileRecordsKeepExisting([],direct.concat(items).filter(f=>f&&String(f.type||'').toLowerCase()!=='folder'));
+}
+function storedFolders(snapshot){
+  snapshot=snapshot||{};
+  const items=Array.isArray(snapshot.spItems)?snapshot.spItems.filter(f=>f&&String(f.type||'').toLowerCase()==='folder'):[];
+  const direct=Array.isArray(snapshot.spFolders)?snapshot.spFolders:[];
+  return mergeFolderPathsKeepExisting([],direct.concat(items));
+}
+function mergeSharePointSnapshots(existing,incoming){
+  const oldFiles=storedFiles(existing),newFiles=storedFiles(incoming);
+  const oldFolders=storedFolders(existing),newFolders=storedFolders(incoming);
+  const oldFileKeys=new Set(oldFiles.map(f=>pathKey(f.path)));
+  const oldFolderKeys=new Set(oldFolders.map(pathKey));
+  return {
+    files:mergeFileRecordsKeepExisting(oldFiles,newFiles),
+    folders:mergeFolderPathsKeepExisting(oldFolders,newFolders),
+    previousFiles:oldFiles,
+    addedFiles:newFiles.filter(f=>!oldFileKeys.has(pathKey(f.path))).length,
+    addedFolders:newFolders.filter(f=>!oldFolderKeys.has(pathKey(f))).length
+  };
+}
+function setSharePointSnapshot(merged){
+  state.spFiles=merged.files;
+  state.spFolders=merged.folders;
+  state.spItems=state.spFiles.concat(state.spFolders.map(path=>({type:'folder',path})));
+  state.spPrev=merged.previousFiles;
+  state.spRoot=commonRoot(state.spFiles.length?state.spFiles:state.spItems);
+}
 function importCSVText(text){
   const items=filesFromCSV(text).filter(f=>!(f.type==='file'&&isJunkFile(f)));
   if(!items.length){toast('CSV tidak berisi data file/folder yang bisa dibaca.');return;}
   const files=items.filter(f=>f.type==='file');
   const folders=items.filter(f=>f.type==='folder').map(f=>f.path);
-  const prevKeys=new Set(state.spFiles.map(f=>f.path.toLowerCase()+'|'+f.size));
-  const newOnes=files.filter(f=>!prevKeys.has(f.path.toLowerCase()+'|'+f.size));
-  state.spPrev=state.spFiles;
-  state.spItems=items;state.spFiles=files;state.spFolders=folders;
-  state.spRoot=commonRoot(files.length?files:items);
+  const merged=mergeSharePointSnapshots(state,{spItems:items,spFiles:files,spFolders:folders});
+  setSharePointSnapshot(merged);
   state.spImportedAt=new Date().toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
   save();recomputeMatches();renderAll();renderSP();
-  const per={};for(const f of files){const r=routeFile(f);if(r)per[r.comp]=(per[r.comp]||0)+1;}
-  toast(`✅ ${files.length} file terdeteksi (PB ${per.PB||0} · SM ${per.SM||0} · CK ${per.CK||0}${newOnes.length?`, ${newOnes.length} file baru`:''})`);
+  const per={};for(const f of state.spFiles){const r=routeFile(f);if(r)per[r.comp]=(per[r.comp]||0)+1;}
+  toast(`✅ ${state.spFiles.length} file tersimpan (PB ${per.PB||0} · SM ${per.SM||0} · CK ${per.CK||0}); ${merged.addedFiles} file baru ditambahkan, data lama dipertahankan.`);
 }
 function renderSP(){
   const el=$('#spContent');
@@ -5367,10 +5535,181 @@ function exportCSV(){
   a.download='status_kk_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
   toast('Status diexport ke CSV.');
 }
+function exportStatusLabel(status){
+  if(status==='unevaluated')return 'Belum dinilai';
+  if(status==='evaluated')return 'Sudah dinilai (termasuk N/A)';
+  return 'Semua baris';
+}
+function exportItemsWithContext(c,rows){
+  const ids=new Set(rows.map(r=>r.id)),out=[],includedHeaders=new Set();let activeHeaders=[];
+  for(const it of c.items){
+    if(it.type==='group'){activeHeaders=[it];continue;}
+    if(it.type==='section'){activeHeaders=activeHeaders.filter(h=>h.type==='group');activeHeaders.push(it);continue;}
+    if(it.type==='subsection'){activeHeaders=activeHeaders.filter(h=>h.type!=='subsection');activeHeaders.push(it);continue;}
+    const r=it._row;
+    if(!r||!ids.has(r.id))continue;
+    for(const h of activeHeaders)if(!includedHeaders.has(h)){out.push(h);includedHeaders.add(h);}
+    out.push(it);
+  }
+  return out;
+}
+function getExportSelection(compId){
+  const c=COMPONENTS.find(x=>x.id===compId);if(!c)return null;
+  const criterionSelect=document.getElementById('exportCriterion-'+compId);
+  const assessmentSelect=document.getElementById('exportAssessment-'+compId);
+  const criterionId=criterionSelect?criterionSelect.value:'';
+  const status=assessmentSelect?assessmentSelect.value:'all';
+  const criterion=criterionId?rowById[criterionId]:null;
+  const rows=c._items.filter(r=>{
+    if(criterion&&r.id!==criterion.id)return false;
+    const assessed=nilaiNum(r.nilai)!==null;
+    if(status==='unevaluated'&&assessed)return false;
+    if(status==='evaluated'&&!assessed)return false;
+    return true;
+  });
+  return {c,criterion,status,rows,items:exportItemsWithContext(c,rows),
+    criterionLabel:criterion?criterionExportLabel(criterion):'Semua kriteria',
+    statusLabel:exportStatusLabel(status)};
+}
+const SM_TEMPLATE_MERGE_COLUMNS=Object.freeze({
+  '1':['A','B'],'10':['A','B','D'],'20':['A','B'],'47':['A','B'],
+  '81':['A','B','D','E','F','G','H','K'],'84':['A','B','D'],'85':['A','B','D'],
+  '91':['A','B','D','E'],'93':['A','B','D','E','F','G','K'],
+  '94':['A','B','D','E','F','G','K'],'100':['A','B','D','E','F','G','K']
+});
+const SM_TEMPLATE_EVIDENCE=Object.freeze({
+  '1':['Dokumen Surat Keputusan Pimpinan Unit','Dokumen Maklumat Pelayanan dan Tangkapan Layar Media Sosial'],
+  '20':['Dokumentasi','Dokumentasi','Dokumentasi','Dokumentasi'],
+  '47':Array(6).fill('Tangkapan Layar atau User Media Sosial')
+});
+function smRecordKey(r){const n=parseInt(String(r&&r.no||''),10);return Number.isFinite(n)?String(n):'';}
+function smActivityLines(r){
+  const lines=String(r&&r.uraian||'').split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
+  return lines.length?lines:[''];
+}
+function smActivityRow(r,index,count){
+  const key=smRecordKey(r),evidence=SM_TEMPLATE_EVIDENCE[key];
+  const row={...r,uraian:smActivityLines(r)[index]||''};
+  if(evidence&&index<evidence.length)row.bukti=evidence[index];
+  else if(index>0)row.bukti='';
+  if(index>0){row.no='';row.aspek='';}
+  return {row,index,count,mergeColumns:SM_TEMPLATE_MERGE_COLUMNS[key]||[]};
+}
+function exportRecordRows(c,r){
+  if(c.id!=='SM')return [{row:r,index:0,count:1,mergeColumns:[]}];
+  const lines=smActivityLines(r);
+  return lines.map((_,i)=>smActivityRow(r,i,lines.length));
+}
+function printExportValue(r,col){
+  if(col.k==='no')return formatExportNo(r.no);
+  if(col.k==='nilai'){
+    const n=nilaiNum(r.nilai);
+    return n==='NA'?'N/A':(n===null?(r.nilai||''):n);
+  }
+  if(col.k==='konversi')return konversiOf(r.nilai)===''?'':konversiOf(r.nilai);
+  const value=r[col.k];return value==null?'':value;
+}
+function printDataRecordHTML(c,r,cols){
+  return exportRecordRows(c,r).map(part=>{
+    const cells=cols.map((col,i)=>{
+      const letter=colLetter(i),merged=part.count>1&&part.mergeColumns.includes(letter);
+      if(part.index>0&&merged)return '';
+      let value;
+      if(c.id==='SM'&&col.k==='uraian')value=part.row.uraian;
+      else if(c.id==='SM'&&part.index>0&&col.k!=='bukti')value='';
+      else value=printExportValue(part.row,col);
+      const rowspan=merged&&part.index===0?` rowspan="${part.count}"`:'';
+      return `<td${rowspan}>${esc(value)}</td>`;
+    }).join('');
+    return `<tr class="datarow">${cells}</tr>`;
+  }).join('');
+}
+function printTemplateHeader(c,layout){
+  const cols=layout.cols;
+  if(c.id==='PB'){
+    const top=cols.map(col=>col.k==='nilai'?`<th>${esc(col.topLabel)}</th>`:`<th rowspan="2">${esc(col.label)}</th>`).join('');
+    const sub=cols.map(col=>col.k==='nilai'?`<th>${esc(col.subLabel).replace(/\n/g,'<br>')}</th>`:'').join('');
+    return `<thead><tr>${top}</tr><tr>${sub}</tr></thead>`;
+  }
+  if(c.id==='SM'){
+    const top=cols.map(col=>`<th>${esc(col.label+(col.subLabel?'\n'+col.subLabel:'' )).replace(/\n/g,'<br>')}</th>`).join('');
+    const markers=layout.markers.map(m=>`<th class="col-marker">${esc(m)}</th>`).join('');
+    return `<thead><tr>${top}</tr><tr class="marker-row">${markers}</tr></thead>`;
+  }
+  const top=cols.map(col=>`<th>${esc(col.label+(col.subLabel?'\n'+col.subLabel:'' )).replace(/\n/g,'<br>')}</th>`).join('');
+  return `<thead><tr>${top}</tr></thead>`;
+}
+function printColumnGroup(layout){
+  const total=layout.widths.reduce((a,b)=>a+b,0)||1;
+  return `<colgroup>${layout.widths.map(w=>`<col style="width:${(w/total*100).toFixed(2)}%">`).join('')}</colgroup>`;
+}
+function printSummaryHTML(c,rows,layout){
+  const cols=layout.cols;
+  const html=templateSummaryRows(c,rows).map(item=>{
+    const cells=Array.from({length:cols.length},(_,i)=>Object.prototype.hasOwnProperty.call(item.cells,i)?item.cells[i]:'');
+    return `<tr class="summary-row">${cells.map(value=>`<td>${esc(value)}</td>`).join('')}</tr>`;
+  }).join('');
+  return `<tfoot>${html}</tfoot>`;
+}
+function printComponentHTML(selection,globalPrint=false){
+  const {c,rows,items,criterionLabel,statusLabel}=selection;
+  const layout=exportLayoutFor(c),cols=layout.cols;
+  const physicalRowCount=c.id==='SM'?rows.reduce((sum,r)=>sum+smActivityLines(r).length,0):rows.length;
+  const title=`${c.full} — Kertas Kerja Pembinaan & Supervisi Semester II TA 2026`;
+  const date=new Date().toLocaleString('id-ID',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  const body=items.map(it=>{
+    if(it.type==='group'||it.type==='section'||it.type==='subsection'){
+      const cls=it.type==='group'?'grp':(it.type==='section'?'sec':'subsec');
+      const tail=Array.from({length:Math.max(0,cols.length-layout.headingSpan)},()=>'<td></td>').join('');
+      return `<tr class="${cls}"><td colspan="${layout.headingSpan}">${esc(it.label)}</td>${tail}</tr>`;
+    }
+    const r=it._row;
+    return printDataRecordHTML(c,r,cols);
+  }).join('');
+  const caption=c.id==='CK'?`<p class="template-caption">${esc(layout.standardCaption)}</p>`:'';
+  const noRows=body||`<tr><td colspan="${cols.length}">Tidak ada baris yang sesuai dengan pilihan ini.</td></tr>`;
+  return `<section data-component="${c.id}" class="print-export-sheet${globalPrint?' global-print-sheet':''}">
+    <div class="export-print-head"><h1>${esc(title)}</h1>${caption}
+      <p><b>Komponen:</b> ${esc(c.name)} (${c.prefix}) &nbsp;·&nbsp; <b>Kriteria:</b> ${esc(criterionLabel)}</p>
+      <p><b>Status penilaian:</b> ${esc(statusLabel)} &nbsp;·&nbsp; <b>Jumlah baris:</b> ${physicalRowCount} &nbsp;·&nbsp; Dicetak ${esc(date)}</p>
+    </div>
+    <table class="kk template-export-table">${printColumnGroup(layout)}${printTemplateHeader(c,layout)}<tbody>${noRows}</tbody>${printSummaryHTML(c,rows,layout)}</table>
+  </section>`;
+}
+function startPrintExport(html){
+  const root=document.getElementById('exportPrint');root.innerHTML=html;
+  const cleanup=()=>{document.body.classList.remove('print-export-mode');root.innerHTML='';window.removeEventListener('afterprint',cleanup);};
+  window.addEventListener('afterprint',cleanup,{once:true});
+  document.body.classList.add('print-export-mode');window.print();
+}
+function exportPDFForComponent(compId){
+  const selection=getExportSelection(compId);if(!selection)return;
+  startPrintExport(printComponentHTML(selection));
+}
+function weightedComponentScores(){
+  const weights=[0.5,0.15,0.35];
+  return COMPONENTS.map((c,i)=>{
+    const avg=computeStats(c._items).avgKonv;
+    return {component:c,average:avg,weight:weights[i],weighted:Math.round(avg*weights[i]*100)/100};
+  });
+}
+function printWeightedSummaryHTML(){
+  const scores=weightedComponentScores();
+  const total=Math.round(scores.reduce((sum,s)=>sum+s.weighted,0)*100)/100;
+  return `<section data-component="NILAI" class="print-export-sheet">
+    <div class="export-print-head"><h1>Penilaian Aspek Kinerja KPPN Pekalongan</h1>
+      <p>Ringkasan nilai berbobot: PB 50% · SM 15% · CK 35%.</p></div>
+    <table class="kk template-export-table"><thead>
+      <tr><th colspan="3">Proses Bisnis (PB) (50%)</th><th colspan="3">Sarana dan Prasarana Mutu Layanan (15%)</th><th colspan="3">Capaian Kinerja (CK) (35%)</th><th rowspan="2">AKK KPPN Pekalongan</th></tr>
+      <tr><th>Nilai Kertas Kerja PB</th><th>Bobot PB</th><th>Nilai PB</th><th>Nilai Kertas Kerja SM</th><th>Bobot SM</th><th>Nilai SM</th><th>Nilai Kertas Kerja CK</th><th>Bobot CK</th><th>Nilai CK</th></tr>
+    </thead><tbody><tr>${scores.map(s=>`<td>${esc(s.average)}</td><td>${Math.round(s.weight*100)}%</td><td>${esc(s.weighted)}</td>`).join('')}<td>${esc(total)}</td></tr></tbody></table>
+  </section>`;
+}
 function exportPDF(){
-  const el=document.getElementById('printDate');
-  if(el)el.textContent=new Date().toLocaleString('id-ID',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  window.print();
+  const sections=COMPONENTS.map(c=>printComponentHTML({c,rows:c._items,items:exportItemsWithContext(c,c._items),
+    criterionLabel:'Semua kriteria',statusLabel:'Semua baris'},true));
+  sections.push(printWeightedSummaryHTML());
+  startPrintExport(sections.join(''));
 }
 
 /* ---------- export Excel 3 sheet ---------- */
@@ -5405,13 +5744,13 @@ function zipStore(entries){
   ev.setUint32(12,cdSize,true);ev.setUint32(16,offset,true);
   return new Blob([...parts,...central,eocd],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
 }
-function buildSheetXML(rows,widths,merges){
+function buildSheetXML(rows,widths,merges,freezeRows=1,orientation='landscape'){
   const last=colLetter(widths.length-1);
   let xml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
   xml+='<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
   xml+='<sheetPr><outlinePr summaryBelow="0" summaryRight="0"/></sheetPr>';
   xml+='<dimension ref="A1:'+last+rows.length+'"/>';
-  xml+='<sheetViews><sheetView tabSelected="1" workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>';
+  xml+='<sheetViews><sheetView tabSelected="1" workbookViewId="0"><pane ySplit="'+freezeRows+'" topLeftCell="A'+(freezeRows+1)+'" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>';
   xml+='<sheetFormatPr defaultRowHeight="15"/>';
   xml+='<cols>'+widths.map((w,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>').join('')+'</cols>';
   xml+='<sheetData>';
@@ -5428,61 +5767,251 @@ function buildSheetXML(rows,widths,merges){
   xml+='</sheetData>';
   if(merges.length)xml+='<mergeCells count="'+merges.length+'">'+merges.map(m=>'<mergeCell ref="'+m+'"/>').join('')+'</mergeCells>';
   xml+='<pageMargins left="0.35" right="0.35" top="0.5" bottom="0.5" header="0.2" footer="0.2"/>';
-  xml+='<pageSetup orientation="landscape" paperSize="9" fitToWidth="1" fitToHeight="0"/>';
+  xml+='<pageSetup orientation="'+orientation+'" paperSize="9" fitToWidth="1" fitToHeight="0"/>';
   xml+='</worksheet>';
   return xml;
 }
-function compWidths(c){
-  const base={no:5,materi:32,aspek:26,uraian:48,kriteria:46,critical:40,hukum:40,bukti:26,link:40,
-    nilai:11,konversi:11,status:17,file:15,validasiKanwil:16,catatanKanwil:16,penjelasanKppn:16,
-    validasiAkhir:14,catatanAkhir:16};
-  return c.cols.map(col=>base[col.k]||16);
+function exportLayoutFor(c){
+  const signoffPB=[
+    {k:'validasiKanwil',label:'Validasi Kanwil Atas Nilai Assesment KPPN'},
+    {k:'catatanKanwil',label:'Catatan Tim Kanwil'},
+    {k:'penjelasanKppn',label:'PENJELASAN KPPN'},
+    {k:'validasiAkhir',label:'Validasi Akhir'},
+    {k:'catatanAkhir',label:'Catatan Kanwil (Validasi Akhir)'}
+  ];
+  if(c.id==='PB')return {
+    headingSpan:8,orientation:'portrait',
+    widths:[4.5,21.13,52,39.38,60,34.63,43.13,21.63,9.88,13,40.88,18,9.63,32.75],
+    headerRows:2,
+    cols:[
+      {k:'no',label:'No'},
+      {k:'materi',label:'Materi'},
+      {k:'kriteria',label:'Kriteria Penilaian'},
+      {k:'critical',label:'Critical Point'},
+      {k:'hukum',label:'Dasar Hukum'},
+      {k:'bukti',label:'Bukti Dukung'},
+      {k:'link',label:'Link Bukti Dukung'},
+      {k:'nilai',label:'Nilai',topLabel:'KPPN Pekalongan',subLabel:'Nilai\n*jika tidak mempunyai transaksi maka kolom diisi "N/A"'},
+      {k:'konversi',label:'Nilai Konversi'},...signoffPB
+    ]
+  };
+  if(c.id==='SM')return {
+    headingSpan:7,orientation:'portrait',
+    widths:[5.13,26.63,52.88,20,38.63,15.38,9.88,16,11.88,25,21.63,30.25],
+    headerRows:3,
+    markers:['(a)','(b)','(c)','','','(d)','(e)','','','','',''],
+    cols:[
+      {k:'no',label:'NO'},
+      {k:'aspek',label:'ASPEK'},
+      {k:'uraian',label:'URAIAN KEGIATAN'},
+      {k:'bukti',label:'BUKTI DUKUNG KEGIATAN'},
+      {k:'link',label:'LINK BUKTI DUKUNG KEGIATAN'},
+      {k:'nilai',label:'NILAI',subLabel:'*) Jika terpenuhi diisi 10, jika tidak terpenuhi diisi 0'},
+      {k:'konversi',label:'NILAI KONVERSI'},
+      {k:'validasiKanwil',label:'Validasi Kanwil Atas Nilai Assesment KPPN'},
+      {k:'catatanKanwil',label:'Catatan Tim Kanwil'},
+      {k:'penjelasanKppn',label:'PENJELASAN KPPN'},
+      {k:'validasiAkhir',label:'Validasi Akhir'},
+      {k:'catatanAkhir',label:'Catatan Kanwil (Validasi Akhir)'}
+    ]
+  };
+  return {
+    headingSpan:6,orientation:'landscape',
+    widths:[5.38,26.38,52.38,37.88,56.38,22,10.38,18.25,18.75,21.75],
+    headerRows:2,
+    standardCaption:'BERDASARKAN SS DAN IKU KPPN TAHUN 2026',
+    cols:[
+      {k:'no',label:'No'},
+      {k:'materi',label:'Materi'},
+      {k:'kriteria',label:'Kriteria Penilaian'},
+      {k:'bukti',label:'BUKTI DUKUNG KEGIATAN'},
+      {k:'link',label:'LINK BUKTI DUKUNG KEGIATAN'},
+      {k:'nilai',label:'Nilai',subLabel:'*jika tidak mempunyai transaksi maka kolom diisi "N/A"'},
+      {k:'konversi',label:'Nilai Konversi'},
+      {k:'validasiKanwil',label:'Validasi Kanwil Atas Nilai Assesment KPPN'},
+      {k:'catatanKanwil',label:'Catatan Tim Kanwil'},
+      {k:'penjelasanKppn',label:'PENJELASAN KPPN'}
+    ]
+  };
 }
-function compSheetRows(c){
+function compWidths(c,layout=exportLayoutFor(c)){return layout.widths;}
+function formatExportNo(no){
+  const s=String(no==null?'':no).trim();
+  return /^\d+$/.test(s)?s+'.0':s;
+}
+function excelValueCell(value,style){
+  if(typeof value==='number'&&Number.isFinite(value))return {t:'n',v:Math.round(value*100)/100,s:style||0};
+  return {t:'s',v:value==null?'':String(value),s:style||0};
+}
+function exportValueForCell(r,col,style){
+  if(col.k==='no')return excelValueCell(formatExportNo(r.no),style);
+  if(col.k==='nilai'){
+    const n=nilaiNum(r.nilai);
+    return excelValueCell(n==='NA'?'N/A':(n===null?(r.nilai||''):n),style);
+  }
+  if(col.k==='konversi'){
+    const n=konversiOf(r.nilai);
+    return excelValueCell(n===''?'':n,style);
+  }
+  const value=r[col.k];return excelValueCell(value==null?'':value,style);
+}
+function excelSummaryCell(value,style){return excelValueCell(value,style);}
+function templateValidationStats(rows,key){
+  const values=[];let na=0;
+  for(const r of rows){
+    const n=nilaiNum(r[key]);
+    if(n==='NA')na++;
+    else if(typeof n==='number')values.push(n);
+  }
+  const sum=values.reduce((a,b)=>a+b,0);
+  return {sum,avg:values.length?sum/values.length:0,na,lessMax:values.filter(v=>v<100).length,
+    total:rows.length,filled:rows.length-na};
+}
+function templateSummaryRows(c,rows){
+  const s=computeStats(rows),finalKey=c.id==='PB'||c.id==='SM'?'validasiAkhir':'';
+  const f=finalKey?templateValidationStats(rows,finalKey):null;
+  if(c.id==='PB')return [
+    {cells:{8:s.sumKonv,12:f.sum},height:21},
+    {cells:{0:'RATA-RATA TOTAL NILAI',8:s.avgKonv,12:f.avg},height:22},
+    {cells:{7:'Total KK',8:s.totalKK,11:'Total KK',12:f.total},height:20},
+    {cells:{7:'Nilai N/A',8:s.na,11:'Nilai N/A',12:f.na},height:20},
+    {cells:{7:'Nilai Kurang maksimal',8:s.kurangMax,11:'Nilai Kurang maksimal',12:f.lessMax},height:20},
+    {cells:{7:'Total Kertas Kerja Terisi',8:s.totalKK-s.na,11:'Total Kertas Kerja Terisi',12:f.filled},height:20}
+  ];
+  if(c.id==='SM')return [
+    {cells:{0:'TOTAL NILAI',6:s.sumKonv,9:'Total Nilai',10:f.sum},height:21},
+    {cells:{0:'Rata-Rata Total Nilai',6:s.avgKonv,9:'Rata-rata',10:f.avg},height:22},
+    {cells:{5:'Total KK',6:s.totalKK,9:'Total KK',10:f.total},height:20},
+    {cells:{5:'Nilai N/A',6:s.na,9:'Nilai N/A',10:f.na},height:20},
+    {cells:{5:'Nilai Kurang maksimal',6:s.kurangMax,9:'Nilai Kurang maksimal',10:f.lessMax},height:20},
+    {cells:{5:'Total Kertas Kerja Terisi',6:s.totalKK-s.na,9:'Total Kertas Kerja Terisi',10:f.filled},height:20}
+  ];
+  return [
+    {cells:{0:'Total Nilai',6:s.sumKonv},height:21},
+    {cells:{0:'Rata-Rata Total Nilai',6:s.avgKonv},height:22}
+  ];
+}
+function addExcelTemplateHeader(c,layout,rows,merges,blank,S){
+  const start=rows.length+1,cols=layout.cols;
+  if(c.id==='PB'){
+    const top=blank(),sub=blank();
+    cols.forEach((col,i)=>{
+      if(col.k==='nilai'){
+        top[i]={t:'s',v:col.topLabel,s:S.head};
+        sub[i]={t:'s',v:col.subLabel,s:S.head};
+      }else{
+        top[i]={t:'s',v:col.label,s:S.head};
+        merges.push(colLetter(i)+start+':'+colLetter(i)+(start+1));
+      }
+    });
+    rows.push({cells:top,h:22},{cells:sub,h:52});
+    return rows.length;
+  }
+  if(c.id==='SM'){
+    const top=blank(),sub=blank(),markers=blank();
+    cols.forEach((col,i)=>{
+      top[i]={t:'s',v:col.label+(col.subLabel?'\n'+col.subLabel:''),s:S.head};
+      merges.push(colLetter(i)+start+':'+colLetter(i)+(start+1));
+      markers[i]={t:'s',v:layout.markers[i]||'',s:S.sec};
+    });
+    rows.push({cells:top,h:40},{cells:sub,h:6},{cells:markers,h:23});
+    return rows.length;
+  }
+  if(layout.standardCaption){
+    const cap=blank();cap[0]={t:'s',v:layout.standardCaption,s:S.sec};
+    rows.push({cells:cap,h:23});
+    merges.push('A'+rows.length+':'+colLetter(layout.headingSpan-1)+rows.length);
+  }
+  const top=blank(),sub=blank();
+  cols.forEach((col,i)=>{
+    top[i]={t:'s',v:col.label+(col.subLabel?'\n'+col.subLabel:''),s:S.head};
+    merges.push(colLetter(i)+ (rows.length+1)+':'+colLetter(i)+(rows.length+2));
+  });
+  rows.push({cells:top,h:40},{cells:sub,h:8});
+  return rows.length;
+}
+function estimateExportRowHeight(r,cols,widths){
+  let lines=1;
+  cols.forEach((col,i)=>{
+    const value=String(r[col.k]==null?'':r[col.k]);
+    const charLimit=Math.max(10,Math.floor((widths[i]||16)*1.25));
+    const count=value.split(/\r?\n/).reduce((n,line)=>n+Math.max(1,Math.ceil(line.length/charLimit)),0);
+    lines=Math.max(lines,count);
+  });
+  return Math.min(420,Math.max(30,lines*12+8));
+}
+function compSheetRows(c,options={}){
   const S={n:0,head:1,wrap:2,sec:3,sub:4,grp:5,ctr:6};
-  const W=compWidths(c);
-  const rows=[{cells:c.cols.map(col=>({t:'s',v:col.label.replace(/<br>/g,' '),s:S.head})),h:34}];
-  const merges=[];
+  const layout=exportLayoutFor(c),cols=layout.cols,W=compWidths(c,layout),rows=[],merges=[];
   const blank=()=>Array.from({length:W.length},()=>({t:'s',v:'',s:S.n}));
-  for(const it of c.items){
+  const addCaption=(text,style,height)=>{
+    const cells=blank();cells[0]={t:'s',v:text,s:style};
+    rows.push({cells,h:height});
+    merges.push('A'+rows.length+':'+colLetter(W.length-1)+rows.length);
+  };
+  if(options.title)addCaption(options.title,S.grp,27);
+  if(options.subtitle)addCaption(options.subtitle,S.sec,23);
+  const freezeRows=addExcelTemplateHeader(c,layout,rows,merges,blank,S);
+  const items=options.items||c.items;
+  for(const it of items){
     if(it.type==='group'||it.type==='section'||it.type==='subsection'){
       const st=it.type==='group'?S.grp:(it.type==='section'?S.sec:S.sub);
       const cells=blank();cells[0]={t:'s',v:it.label,s:st};
       rows.push({cells,h:it.type==='group'?22:20});
-      merges.push('A'+rows.length+':'+colLetter(W.length-1)+rows.length);
+      merges.push('A'+rows.length+':'+colLetter(layout.headingSpan-1)+rows.length);
       continue;
     }
     const r=it._row;if(!r)continue;
-    const st=statusOf(r);
-    const fsp=!state.spItems.length?'belum sync':(r._files>0?r._files+' file':(r._hasFolder?'folder ada, 0 file':'tidak ada file'));
-    const cellFor=col=>{
-      switch(col.k){
-        case 'no':return {t:'s',v:r.no,s:S.ctr};
-        case 'konversi':return {t:'s',v:konversiOf(r.nilai),s:S.ctr};
-        case 'status':return {t:'s',v:st.t,s:S.n};
-        case 'file':return {t:'s',v:fsp,s:S.n};
-        default:return {t:'s',v:r[col.k]||'',s:col.edit?S.wrap:S.wrap};
+    for(const part of exportRecordRows(c,r)){
+      const cells=cols.map((col,i)=>{
+        const style=col.k==='no'||col.k==='nilai'||col.k==='konversi'?S.ctr:S.wrap;
+        if(c.id==='SM'&&part.index>0&&col.k!=='uraian'&&col.k!=='bukti')return excelValueCell('',style);
+        return exportValueForCell(part.row,col,style);
+      });
+      const start=rows.length+1;
+      rows.push({cells,h:estimateExportRowHeight(part.row,cols,W)});
+      if(c.id==='SM'&&part.index===0&&part.count>1){
+        const end=start+part.count-1;
+        part.mergeColumns.forEach(letter=>merges.push(`${letter}${start}:${letter}${end}`));
       }
-    };
-    rows.push({cells:c.cols.map(cellFor),h:58});
+    }
   }
-  const s=computeStats(c._items);
-  const recap=[['Total KK',s.totalKK],['Total KK Terisi',s.nilaiFilled],['Nilai N/A',s.na],
-    ['Nilai Kurang Maksimal',s.kurangMax],['Belum ada Link',s.noLink],['Belum Dinilai',s.noNilai],
-    ['Rata-rata Total Nilai',s.avgKonvAll],
-    ['Materi tanpa File',state.spItems.length?s.noFile:'—'],
-    ['Folder KK Belum Terisi',state.spItems.length?s.folderNoFile:'—']];
-  rows.push({cells:blank(),h:10});
-  recap.forEach(pair=>{
-    const cells=blank();cells[0]={t:'s',v:pair[0],s:S.sec};
-    cells[Math.min(8,W.length-1)]={t:'s',v:String(pair[1]),s:S.ctr};
-    rows.push({cells,h:18});
-    merges.push('A'+rows.length+':'+colLetter(Math.min(8,W.length-1)-1)+rows.length);
+  const dataRows=options.dataRows||c._items;
+  templateSummaryRows(c,dataRows).forEach(summary=>{
+    const cells=blank();
+    Object.keys(summary.cells).forEach(i=>{cells[Number(i)]=excelSummaryCell(summary.cells[i],typeof summary.cells[i]==='number'?S.ctr:S.sec);});
+    rows.push({cells,h:summary.height});
   });
-  return {rows,widths:W,merges};
+  return {rows,widths:W,merges,freezeRows,orientation:layout.orientation};
 }
-function exportExcel(){
-  const sheets=COMPONENTS.map(c=>Object.assign({name:c.sheetName},compSheetRows(c)));
+
+function weightedSummarySheetRows(){
+  const scores=weightedComponentScores(),total=Math.round(scores.reduce((sum,s)=>sum+s.weighted,0)*100)/100;
+  const W=[25,10,15,30,10,15,25,10,15,22],rows=[],merges=[];
+  const blank=()=>Array.from({length:W.length},()=>({t:'s',v:'',s:0}));
+  rows.push({cells:blank(),h:10});
+  const title=blank();title[0]={t:'s',v:'Penilaian Aspek Kinerja KPPN Pekalongan',s:5};
+  rows.push({cells:title,h:25});merges.push('A2:J2');
+  const groups=blank();
+  groups[0]={t:'s',v:'Proses Bisnis (PB) (50%)',s:1};
+  groups[3]={t:'s',v:'Sarana dan Prasarana Mutu Layanan (15%)',s:1};
+  groups[6]={t:'s',v:'Capaian Kinerja (CK) (35%)',s:1};
+  groups[9]={t:'s',v:'AKK KPPN Pekalongan',s:1};
+  rows.push({cells:groups,h:34});merges.push('A3:C3','D3:F3','G3:I3','J3:J4');
+  const headers=blank();
+  ['Nilai Kertas Kerja PB','Bobot PB','Nilai PB','Nilai Kertas Kerja SM','Bobot SM','Nilai SM',
+   'Nilai Kertas Kerja CK','Bobot CK','Nilai CK'].forEach((v,i)=>headers[i]={t:'s',v,s:3});
+  rows.push({cells:headers,h:35});
+  const values=blank();let col=0;
+  scores.forEach(score=>{
+    values[col++]=excelSummaryCell(score.average,6);
+    values[col++]=excelSummaryCell(`${Math.round(score.weight*100)}%`,6);
+    values[col++]=excelSummaryCell(score.weighted,6);
+  });
+  values[9]=excelSummaryCell(total,6);rows.push({cells:values,h:24});
+  return {rows,widths:W,merges,freezeRows:4,orientation:'landscape'};
+}
+function buildWorkbookBlob(sheets){
   const styles=u8str('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
    +'<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
    +'<fonts count="3"><font><sz val="10"/><name val="Calibri"/></font>'
@@ -5490,18 +6019,18 @@ function exportExcel(){
    +'<font><b/><sz val="10"/><color rgb="FF16222E"/><name val="Calibri"/></font></fonts>'
    +'<fills count="5"><fill><patternFill patternType="none"/></fill>'
    +'<fill><patternFill patternType="gray125"/></fill>'
-   +'<fill><patternFill patternType="solid"><fgColor rgb="FF0E3A5C"/><bgColor indexed="64"/></patternFill></fill>'
-   +'<fill><patternFill patternType="solid"><fgColor rgb="FFD9E9F6"/><bgColor indexed="64"/></patternFill></fill>'
-   +'<fill><patternFill patternType="solid"><fgColor rgb="FFEDF5FB"/><bgColor indexed="64"/></patternFill></fill></fills>'
-   +'<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>'
+   +'<fill><patternFill patternType="solid"><fgColor rgb="FFA5A5A5"/><bgColor indexed="64"/></patternFill></fill>'
+   +'<fill><patternFill patternType="solid"><fgColor rgb="FFD9D9D9"/><bgColor indexed="64"/></patternFill></fill>'
+   +'<fill><patternFill patternType="solid"><fgColor rgb="FFBFBFBF"/><bgColor indexed="64"/></patternFill></fill></fills>'
+   +'<borders count="1"><border><left style="thin"><color rgb="FF7F7F7F"/></left><right style="thin"><color rgb="FF7F7F7F"/></right><top style="thin"><color rgb="FF7F7F7F"/></top><bottom style="thin"><color rgb="FF7F7F7F"/></bottom><diagonal/></border></borders>'
    +'<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
    +'<cellXfs count="7">'
    +'<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
-   +'<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>'
+   +'<xf numFmtId="0" fontId="2" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>'
    +'<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>'
-   +'<xf numFmtId="0" fontId="2" fillId="3" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>'
-   +'<xf numFmtId="0" fontId="2" fillId="4" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>'
-   +'<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf>'
+   +'<xf numFmtId="0" fontId="2" fillId="3" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>'
+   +'<xf numFmtId="0" fontId="2" fillId="4" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>'
+   +'<xf numFmtId="0" fontId="2" fillId="4" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>'
    +'<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'
    +'</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>');
   const ct='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
@@ -5522,16 +6051,42 @@ function exportExcel(){
    +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
    +sheets.map((s,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')
    +`<Relationship Id="rId${sheets.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
-  const blob=zipStore([
+  return zipStore([
     {name:'[Content_Types].xml',data:u8str(ct)},
     {name:'_rels/.rels',data:u8str(rels)},
     {name:'xl/workbook.xml',data:u8str(wb)},
     {name:'xl/_rels/workbook.xml.rels',data:u8str(wbrels)},
     {name:'xl/styles.xml',data:styles}
-  ].concat(sheets.map((s,i)=>({name:`xl/worksheets/sheet${i+1}.xml`,data:u8str(buildSheetXML(s.rows,s.widths,s.merges))}))));
+  ].concat(sheets.map((s,i)=>({name:`xl/worksheets/sheet${i+1}.xml`,data:u8str(buildSheetXML(s.rows,s.widths,s.merges,s.freezeRows||1,s.orientation||'landscape'))}))));
+}
+function downloadWorkbook(sheets,fileName,message){
+  const blob=buildWorkbookBlob(sheets);
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='Kertas_Kerja_KK_Pekalongan_'+new Date().toISOString().slice(0,10)+'.xlsx';a.click();
-  toast('Excel (.xlsx) diunduh — '+sheets.length+' sheet: '+sheets.map(s=>s.name).join(', '));
+  a.download=fileName;a.click();
+  toast(message);
+}
+function exportFilenamePart(text){
+  return String(text||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,48)||'data';
+}
+function exportExcel(){
+  const sheets=COMPONENTS.map(c=>Object.assign({name:c.sheetName},compSheetRows(c)));
+  sheets.push(Object.assign({name:'Nilai'},weightedSummarySheetRows()));
+  downloadWorkbook(sheets,'Kertas_Kerja_KK_Pekalongan_'+new Date().toISOString().slice(0,10)+'.xlsx',
+    'Excel (.xlsx) diunduh — 3 kertas kerja + rekap Nilai berbobot.');
+}
+function exportExcelForComponent(compId){
+  const selection=getExportSelection(compId);if(!selection)return;
+  const {c,criterion,rows,items,statusLabel,criterionLabel}=selection;
+  const title=`${c.full} — Kertas Kerja Pembinaan & Supervisi Semester II TA 2026`;
+  const exportRowCount=c.id==='SM'?rows.reduce((sum,r)=>sum+smActivityLines(r).length,0):rows.length;
+  const subtitle=`Kriteria: ${criterionLabel} | Status: ${statusLabel} | Jumlah baris: ${exportRowCount}`;
+  const sheetSuffix=criterion?('No '+criterion.no):(statusLabel==='Semua baris'?'Semua':statusLabel.replace(' (termasuk N/A)',''));
+  const sheetName=(c.prefix+' '+sheetSuffix).slice(0,31);
+  const sheet=Object.assign({name:sheetName},compSheetRows(c,{items,dataRows:rows,title,subtitle}));
+  const criterionPart=criterion?exportFilenamePart(criterionExportLabel(criterion)):'semua-kriteria';
+  const statusPart=statusLabel==='Belum dinilai'?'belum-dinilai':(statusLabel.startsWith('Sudah')?'sudah-dinilai':'semua-baris');
+  const fileName=`Kertas_Kerja_${c.prefix}_${criterionPart}_${statusPart}_${new Date().toISOString().slice(0,10)}.xlsx`;
+  downloadWorkbook([sheet],fileName,`Excel ${c.prefix} diunduh — ${criterionLabel}, ${statusLabel}, ${exportRowCount} baris.`);
 }
 
 /* ---------- toast ---------- */
@@ -5567,6 +6122,10 @@ function bind(){
     if(t.classList&&t.classList.contains('chkMiss')){filters[t.dataset.comp].miss=t.checked;renderBody(t.dataset.comp);}
   });
   document.addEventListener('click',e=>{
+    const pdfButton=e.target.closest('.btnCompPdf');
+    if(pdfButton){exportPDFForComponent(pdfButton.dataset.comp);return;}
+    const excelButton=e.target.closest('.btnCompExcel');
+    if(excelButton){exportExcelForComponent(excelButton.dataset.comp);return;}
     const tab=e.target.closest('.comptab');
     if(tab){state.active=tab.dataset.comp;save();renderTabs();return;}
     const cl=e.target.closest('td.clamp');
@@ -5601,13 +6160,14 @@ function bind(){
     const f=e.target.files[0];if(!f)return;
     const rd=new FileReader();rd.onload=()=>{try{
       const j=JSON.parse(rd.result);
-      state.edits=j.edits||{};
-      state.spItems=j.spItems||j.spFiles||[];
-      state.spFiles=(j.spFiles||state.spItems).filter(f=>f.type!=='folder');
-      state.spFolders=(j.spFolders||state.spItems.filter(f=>f.type==='folder')).map(f=>f.path||f);
-      state.spPrev=[];state.spRoot=state.spFiles.length?commonRoot(state.spFiles):'';
-      state.spImportedAt=new Date().toLocaleString('id-ID');
-      save();buildItems();recomputeMatches();renderAll();renderSP();toast('Backup dipulihkan.');
+      if(!isObjectRecord(j))throw new Error('format backup tidak valid');
+      const addedEdits=countNewEditFields(state.edits,j.edits||{});
+      state.edits=mergeEditsKeepExisting(state.edits,j.edits||{});
+      const merged=mergeSharePointSnapshots(state,j);
+      setSharePointSnapshot(merged);
+      state.spImportedAt=new Date().toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+      save();buildItems();recomputeMatches();renderAll();renderSP();
+      toast(`Backup digabungkan: ${addedEdits} isian baru, ${merged.addedFiles} file baru, ${merged.addedFolders} folder baru. Data lama yang sama tetap dipakai.`);
     }catch(err){toast('File backup tidak valid.');}};rd.readAsText(f,'UTF-8');e.target.value='';});
   $('#btnAutoKw').addEventListener('click',()=>{
     if(!state.spItems.length){toast('Import CSV SharePoint dulu, agar keyword bisa dicocokkan dengan nama folder.');return;}
@@ -5634,5 +6194,5 @@ renderAll();
 renderSP();
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a48aceddf8ad9509',t:'MTc5MTY4OTY1NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a49720fe7ca11333',t:'MTc5MTgxODg0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
